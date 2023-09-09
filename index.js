@@ -6,7 +6,7 @@ const TOKEN = process.env.TOKEN
 const PUBLIC_KEY = process.env.PUBLIC_KEY || 'not set'
 const GUILD_ID = process.env.GUILD_ID 
 
-
+const Discord = require('discord.js');
 const axios = require('axios')
 const express = require('express');
 const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = require('discord-interactions');
@@ -26,7 +26,9 @@ const discord_api = axios.create({
   }
 });
 
-app.post('message', async message => {
+const client = new Discord.Client();
+
+client.on('message', async message => {
   let sibot = process.env.BOTNYA;
   let sich = process.env.CHNYA;
   if (message.author.id === sibot) {
@@ -128,3 +130,4 @@ app.listen(8999, () => {
 
 })
 
+client.login(process.env.TOKEN);
