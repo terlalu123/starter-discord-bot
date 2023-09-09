@@ -26,8 +26,25 @@ const discord_api = axios.create({
   }
 });
 
-
-
+app.post('message', async message => {
+  let sibot = process.env.BOTNYA;
+  let sich = process.env.CHNYA;
+  if (message.author.id === sibot) {
+  if (message.channel.id === sich) {
+  message.embeds.forEach((e) => {
+  if (e.description !== undefined && e.description.includes ("|")) {return} 
+  if (e.title !== undefined && e.title.includes('(')) {
+     let url = e.image.url.split('/');
+     let series = url[4]
+     message.channel.send(series)
+     .then(msg => {
+      setTimeout(() => msg.delete(), 3000)
+      });
+  } else return
+  })
+  } else return 
+  } else return
+});
 
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
