@@ -6,7 +6,6 @@ const TOKEN = process.env.TOKEN
 const PUBLIC_KEY = process.env.PUBLIC_KEY || 'not set'
 const GUILD_ID = process.env.GUILD_ID 
 
-const Discord = require('discord.js');
 const axios = require('axios')
 const express = require('express');
 const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = require('discord-interactions');
@@ -26,28 +25,6 @@ const discord_api = axios.create({
   }
 });
 
-const client = new Discord.Client();
-
-client.on('message', async message => {
-  let sibot = process.env.BOTNYA;
-  let sich = process.env.CHNYA;
-  if (message.author.id === sibot) {
-  if (message.channel.id === sich) {
-  message.embeds.forEach((e) => {
-  if (e.description !== undefined && e.description.includes ("|")) {return} 
-  if (e.title !== undefined && e.title.includes('(')) {
-     let url = e.image.url.split('/');
-     let series = url[4]
-     message.channel.send(series)
-     .then(msg => {
-      setTimeout(() => msg.delete(), 3000)
-      });
-  } else return
-  })
-  } else return 
-  } else return
-});
-
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
 
@@ -62,31 +39,6 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
 
-    if(interaction.data.name == 'dm'){
-      // https://discord.com/developers/docs/resources/user#create-dm
-      let c = (await discord_api.post(`/users/@me/channels`,{
-        recipient_id: interaction.member.user.id
-      })).data
-      try{
-        // https://discord.com/developers/docs/resources/channel#create-message
-        let res = await discord_api.post(`/channels/${c.id}/messages`,{
-          content:'Yo! I got your slash command. I am not able to respond to DMs just slash commands.',
-        })
-        console.log(res.data)
-      }catch(e){
-        console.log(e)
-      }
-
-      return res.send({
-        // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data:{
-          content:'👍'
-        }
-      });
-    }
-  }
-
 });
 
 
@@ -96,11 +48,6 @@ app.get('/register_commands', async (req,res) =>{
     {
       "name": "yo",
       "description": "replies with Yo!",
-      "options": []
-    },
-    {
-      "name": "dm",
-      "description": "sends user a DM",
       "options": []
     }
   ]
